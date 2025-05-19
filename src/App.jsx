@@ -97,121 +97,21 @@ function App() {
         <main className="main-content">
           <Routes>
             {/* Public routes */}
-            <Route
-              path="/"
-              element={
-                <PublicRoute>
-                  <SignIn />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <PublicRoute>
-                  <SignUp />
-                </PublicRoute>
-              }
-            />
-
+            <Route path="/" element={<PublicRoute><SignIn /></PublicRoute>}/>
+            <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>}/>
             {/* Private routes */}
-            <Route
-              path="/all"
-              element={
-                <PrivateRoute>
-                  <All />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/cafe"
-              element={
-                <PrivateRoute>
-                  <Cafe />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/veg"
-              element={
-                <PrivateRoute>
-                  <Veg />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/nonveg"
-              element={
-                <PrivateRoute>
-                  <Nonveg />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/toys"
-              element={
-                <PrivateRoute>
-                  <Toys />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/electronics"
-              element={
-                <PrivateRoute>
-                  <Electronics />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/mobiles"
-              element={
-                <PrivateRoute>
-                  <Mobiles />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/babystore"
-              element={
-                <PrivateRoute>
-                  <BabyStore />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                <PrivateRoute>
-                  <About />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/contact"
-              element={
-                <PrivateRoute>
-                  <ContactUs />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/cart"
-              element={
-                <PrivateRoute>
-                  <Cart />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/orders"
-              element={
-                <PrivateRoute>
-                  <Orders />
-                </PrivateRoute>
-              }
-            />
-            
+            <Route path="/all" element={<PrivateRoute><All /></PrivateRoute>}/>
+            <Route path="/cafe" element={ <PrivateRoute><Cafe /></PrivateRoute>}/>
+            <Route path="/veg" element={<PrivateRoute> <Veg /></PrivateRoute>}/>
+            <Route path="/nonveg" element={<PrivateRoute><Nonveg /></PrivateRoute>}/>
+            <Route path="/toys" element={<PrivateRoute><Toys /></PrivateRoute>}/>
+            <Route path="/electronics" element={<PrivateRoute><Electronics /></PrivateRoute>}/>
+            <Route path="/mobiles" element={<PrivateRoute><Mobiles /></PrivateRoute>} />
+            <Route path="/babystore" element={<PrivateRoute><BabyStore /></PrivateRoute> }/>
+            <Route path="/about" element={<PrivateRoute><About /></PrivateRoute> }/>
+            <Route path="/contact" element={<PrivateRoute><ContactUs /></PrivateRoute>}/>
+            <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute> }/>
+            <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute> }/>
             {/* Redirect unknown routes */}
             <Route path="*" element={<Navigate to={isAuthenticated ? "/all" : "/"} />} />
           </Routes>
