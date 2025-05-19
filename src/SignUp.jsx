@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { registerUser } from './Store';
 
 function SignUp() {
-  const { register, handleSubmit, /*formState: { errors }*/ } = useForm();
+  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //const users = useSelector(state => state.users.users);
