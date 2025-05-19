@@ -2,7 +2,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from './Store'; // Adjust path if needed
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
+
 import './SignIn.css';
 
 function SignIn() {
@@ -53,8 +54,9 @@ function SignIn() {
       </form>
 
       <p className="new-user">
-        New user? <a href="/signup">Create new account</a>
+        New user? <Link to="/signup">Create new account</Link>
       </p>
+
     </div>
   );
 }
