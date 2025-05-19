@@ -1,20 +1,20 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import './SignUp.css'; // Create this CSS file
-import { useDispatch } from 'react-redux';
+import './SignUp.css';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from './Store';
 
 function SignUp() {
-  const { register, handleSubmit } = useForm();
-
-  const dispatch=useDispatch();
-  const navigate=useNavigate();
+  const { register, handleSubmit, /*formState: { errors }*/ } = useForm();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  //const users = useSelector(state => state.users.users);
 
   const onSubmit = (data) => {
     dispatch(registerUser(data));
-    alert('register successful');
-    navigate('/SignIn')
+    alert('Register successful');
+    navigate('/');
   };
 
   return (
@@ -24,11 +24,13 @@ function SignUp() {
 
         <div>
           <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            {...register('username')}
-          />
+          <input type="text" {...register('username')} required />
+        </div>
+
+
+        <div>
+          <label htmlFor="email">Email</label>
+          <input type="email" {...register('email')} required />
         </div>
 
         <div>
@@ -36,8 +38,9 @@ function SignUp() {
           <input
             id="password"
             type="password"
-            {...register('password')}
+            {...register('password')} required
           />
+          {/* {errors.password && <p className="error">{errors.password.message}</p>} */}
         </div>
 
         <div>
@@ -47,7 +50,7 @@ function SignUp() {
               <input
                 type="radio"
                 value="male"
-                {...register('gender')}
+                {...register('gender')}required
               />
               Male
             </label>
@@ -55,11 +58,12 @@ function SignUp() {
               <input
                 type="radio"
                 value="female"
-                {...register('gender')}
+                {...register('gender')} required
               />
               Female
             </label>
           </div>
+          {/* {errors.gender && <p className="error">{errors.gender.message}</p>} */}
         </div>
 
         <button type="submit">Sign Up</button>

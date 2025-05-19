@@ -1,100 +1,176 @@
-/* Toys Section */
 .toys-container {
-  padding: 30px;
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
-  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  padding: 2rem;
+  background: #fefefe;
+  width: 100%;
 }
 
 .toys-title {
-  font-size: 2.5rem;
   text-align: center;
-  margin-bottom: 30px;
-  color: #d84315;
-  font-weight: 800;
-  text-shadow: 2px 2px #ffccbc;
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  color: #222;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.price-filter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.price-filter label {
+  font-weight: 600;
+  color: #444;
+  user-select: none;
+}
+
+.price-filter select {
+  padding: 7px 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1.2px solid #ccc;
+  min-width: 140px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.price-filter select:hover {
+  border-color: #666;
+}
+
+.reset-btn {
+  background-color: #ff6b6b;
+  border: none;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.reset-btn:hover {
+  background-color: #ee5253;
 }
 
 .toys-list {
-  list-style: none;
   display: grid;
-  /* grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); */
-   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 0;
-  margin: 0;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.6rem;
+  width: 100%;
 }
 
 .toys-list li {
-  background: #fff;
-  border: 2px dashed #ffab91;
-  border-radius: 20px;
-  padding: 16px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  position: relative;
-  transition: transform 0.3s, box-shadow 0.3s;
+  background: white;
+  border-radius: 14px;
+  padding: 1.4rem;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: scale(0.95);
+  animation: fadeScaleUp 0.5s forwards ease;
 }
 
-.toys-list li:hover {
-  transform: translateY(-8px) rotate(-1deg);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+.toys-list li:nth-child(1) { animation-delay: 0.1s; }
+.toys-list li:nth-child(2) { animation-delay: 0.2s; }
+.toys-list li:nth-child(3) { animation-delay: 0.3s; }
+.toys-list li:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeScaleUp {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
 }
 
 .toys-list img {
   width: 100%;
   height: 180px;
-  object-fit: cover;
-  border-radius: 15px;
-  margin-bottom: 12px;
-  transition: transform 0.3s;
+  object-fit: contain;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
 }
 
-.toys-list li:hover img {
-  transform: rotate(3deg) scale(1.05);
+.toys-list img:hover {
+  transform: scale(1.05);
+}
+
+.toy-info {
+  text-align: center;
+  width: 100%;
 }
 
 .toy-info h3 {
-  font-size: 1.3rem;
-  color: #e64a19;
-  margin: 10px 0 5px;
-  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #222;
 }
 
 .toy-info p {
-  font-size: 1.1rem;
-  color: #666;
-  margin-bottom: 14px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 1rem;
 }
 
 .toy-info button {
-  padding: 10px 16px;
-  background-color: #ff7043;
-  color: white;
+  background-color: #0984e3;
   border: none;
-  border-radius: 25px;
-  font-size: 1rem;
+  color: white;
+  padding: 10px 22px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  font-weight: 700;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+  box-shadow: 0 4px 8px rgba(9, 132, 227, 0.4);
 }
 
 .toy-info button:hover {
-  background-color: #d84315;
-  transform: translateY(-2px);
+  background-color: #74b9ff;
+  box-shadow: 0 6px 15px rgba(116, 185, 255, 0.6);
+  transform: translateY(-4px);
 }
-.custom-toast {
+
+.pagination {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
 }
 
-.toast-img {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  border-radius: 4px;
+.pagination button {
+  background-color: #ccc;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.toast-text {
-  font-weight: 500;
+.pagination button:hover:not(:disabled) {
+  background-color: #0984e3;
+  color: white;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pagination button.active {
+  background-color: #0984e3;
+  color: white;
+  cursor: default;
 }

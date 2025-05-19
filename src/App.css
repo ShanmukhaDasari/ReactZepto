@@ -121,7 +121,7 @@ html, body {
 .main-content {
   flex-grow: 1;
   padding: 24px;
-  background-color: #fff;
+  background-color: #f6f1f1;
   width: 100%;
   box-sizing: border-box;
   margin-top: 112px; /* 64px header + 48px navbar */
