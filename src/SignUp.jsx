@@ -14,7 +14,7 @@ function SignUp() {
   const onSubmit = (data) => {
     dispatch(registerUser(data));
     alert('Register successful');
-    navigate('/');
+    navigate('/signin');
   };
 
   return (

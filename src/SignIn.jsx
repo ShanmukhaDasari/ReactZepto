@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from './Store'; // Adjust path if needed
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate,Link, useLocation } from 'react-router-dom';
 
 import './SignIn.css';
 
@@ -10,9 +10,14 @@ function SignIn() {
   const { register, handleSubmit, reset } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   
   // Get users array from Redux
   const users = useSelector((state) => state.users.users);
+
+  // Read redirect param from query string, default to '/all'
+  const params = new URLSearchParams(location.search);
+  const redirectPath = params.get('redirect') || '/all';
 
   const onSubmit = (data) => {
     const emailInput = data.email.trim().toLowerCase();
@@ -28,7 +33,9 @@ function SignIn() {
     if (existingUser) {
       dispatch(loginUser(existingUser));
       alert('Sign in successful!');
-      navigate('/all');
+      // Navigate to the redirect path or /all
+      navigate(redirectPath, { replace: true });
+      // navigate('/all');
     } else {
       alert('Invalid email or password');
       reset(); // clear form inputs
@@ -38,7 +45,7 @@ function SignIn() {
   return (
     <div className="signin-container">
       <form onSubmit={handleSubmit(onSubmit)} className="signin-form">
-        <h2>Sign In to Zepto</h2>
+        <h2>Sign In to Mart</h2>
 
         <div>
           <label htmlFor="email">Email</label>

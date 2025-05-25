@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -19,21 +19,10 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 
 import './App.css';
+
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { logOut } from './Store';
-
-// PrivateRoute component to protect private pages
-function PrivateRoute({ children }) {
-  const isAuthenticated = useSelector((state) => state.users.isAuthenticated);
-  return isAuthenticated ? children : <Navigate to="/" replace />;
-}
-
-// PublicRoute to prevent logged-in users from visiting signin/signup
-function PublicRoute({ children }) {
-  const isAuthenticated = useSelector((state) => state.users.isAuthenticated);
-  return !isAuthenticated ? children : <Navigate to="/all" replace />;
-}
 
 function App() {
   const cartItems = useSelector((state) => state.cart);
@@ -44,9 +33,24 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
   const handleLogout = () => {
     dispatch(logOut());
-    navigate('/');
+    navigate('/signin');
+  };
+
+  const handleCartClick = (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      setShowLoginPrompt(true);
+    }
+  };
+
+  const handleLoginClick = () => {
+    setShowLoginPrompt(false);
+     navigate('/signin?redirect=/cart');
+    // navigate('/signin');
   };
 
   return (
@@ -66,10 +70,14 @@ function App() {
                   <button onClick={handleLogout} className="logout-button">Log Out</button>
                 </div>
               ) : (
-                <Link to="/" className="nav-link">Sign In</Link>
+                <Link to="/signin" className="nav-link">Sign In</Link>
               )}
             </nav>
-            <Link to="/cart" className="cart-link">
+            <Link
+              to="/cart"
+              onClick={handleCartClick}
+              className="cart-link"
+            >
               🛒
               {totalCount > 0 && <span className="cart-badge">{totalCount}</span>}
             </Link>
@@ -77,44 +85,51 @@ function App() {
         </header>
 
         {/* Navigation */}
-        {isAuthenticated && (
-          <nav className="navbar">
-            <Link to="/all">All</Link>
-            <Link to="/cafe">☕ Cafe</Link>
-            <Link to="/veg">🥕 Veg</Link>
-            <Link to="/nonveg">🍗 Non-Veg</Link>
-            <Link to="/toys">🧸 Toys</Link>
-            <Link to="/electronics">🔌 Electronics</Link>
-            <Link to="/babystore">👶 Baby</Link>
-            <Link to="/mobiles">📱 Mobiles</Link>
-            <Link to="/orders">Orders</Link>
-            <Link to="/about">About</Link>
-            <Link to="/contact">Contact</Link>
-          </nav>
-        )}
+        <nav className="navbar">
+          <Link to="/">All</Link>
+          <Link to="/cafe">☕ Cafe</Link>
+          <Link to="/veg">🥕 Veg</Link>
+          <Link to="/nonveg">🍗 Non-Veg</Link>
+          <Link to="/toys">🧸 Toys</Link>
+          <Link to="/electronics">🔌 Electronics</Link>
+          <Link to="/babystore">👶 Baby</Link>
+          <Link to="/mobiles">📱 Mobiles</Link>
+          <Link to="/orders">Orders</Link>
+          <Link to="/about">About</Link>
+          <Link to="/contact">Contact</Link>
+        </nav>
 
         {/* Main Content */}
         <main className="main-content">
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<PublicRoute><SignIn /></PublicRoute>}/>
-            <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>}/>
-            {/* Private routes */}
-            <Route path="/all" element={<PrivateRoute><All /></PrivateRoute>}/>
-            <Route path="/cafe" element={ <PrivateRoute><Cafe /></PrivateRoute>}/>
-            <Route path="/veg" element={<PrivateRoute> <Veg /></PrivateRoute>}/>
-            <Route path="/nonveg" element={<PrivateRoute><Nonveg /></PrivateRoute>}/>
-            <Route path="/toys" element={<PrivateRoute><Toys /></PrivateRoute>}/>
-            <Route path="/electronics" element={<PrivateRoute><Electronics /></PrivateRoute>}/>
-            <Route path="/mobiles" element={<PrivateRoute><Mobiles /></PrivateRoute>} />
-            <Route path="/babystore" element={<PrivateRoute><BabyStore /></PrivateRoute> }/>
-            <Route path="/about" element={<PrivateRoute><About /></PrivateRoute> }/>
-            <Route path="/contact" element={<PrivateRoute><ContactUs /></PrivateRoute>}/>
-            <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute> }/>
-            <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute> }/>
-            {/* Redirect unknown routes */}
-            <Route path="*" element={<Navigate to={isAuthenticated ? "/all" : "/"} />} />
-          </Routes>
+          {showLoginPrompt ? (
+            <div className="login-prompt-container">
+              <h2 className="login-prompt-message">Please sign in to view your cart.</h2>
+              <button
+                onClick={handleLoginClick}
+                className="login-prompt-button"
+              >
+                Go to Sign In
+              </button>
+            </div>
+          ) : (
+            <Routes>
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/" element={<All />} />
+              <Route path="/cafe" element={<Cafe />} />
+              <Route path="/veg" element={<Veg />} />
+              <Route path="/nonveg" element={<Nonveg />} />
+              <Route path="/toys" element={<Toys />} />
+              <Route path="/electronics" element={<Electronics />} />
+              <Route path="/mobiles" element={<Mobiles />} />
+              <Route path="/babystore" element={<BabyStore />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/cart" element={isAuthenticated ? <Cart /> : <Navigate to="/signin" />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          )}
         </main>
 
         {/* Footer */}

@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AddToCart } from './Store';
 import './BabyStore.css'; // Importing styles
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function BabyStore() {
   const babyProducts = useSelector(globalState => globalState.products.baby);
@@ -68,6 +70,16 @@ function BabyStore() {
         {renderBabyProducts()}
       </ul>
       {/* <ToastContainer position='top-center' autoClose={1000}/> */}
+       {/* Toast Container */}
+      {/* <ToastContainer
+        position="top-center"
+        autoClose={1500}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      /> */}
 
       {/* Pagination Controls */}
       {totalPages > 1 && (

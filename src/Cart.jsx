@@ -6,16 +6,16 @@ import QRCode from 'react-qr-code';
 import confetti from 'canvas-confetti';
 import emailjs from 'emailjs-com';
 import './Cart.css';
-import {toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 function Cart() {
   const cartObjects = useSelector(state => state.cart);
+  const currentUser = useSelector((state) => state.users.currentUser);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const emailRef = useRef();
   const couponCodeRef = useRef();
 
-  const [customerEmail, setCustomerEmail] = useState('');
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [couponCodeDiscountPer, setCouponCodeDiscountPer] = useState(0);
   const [couponName, setCouponName] = useState('');
@@ -23,14 +23,6 @@ function Cart() {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const [showBlast, setShowBlast] = useState(false);
-
-  // Pagination state
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const itemsPerPage = 5;
-
-  // const indexOfLastItem = currentPage * itemsPerPage;
-  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // const currentItems = cartObjects.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleCouponPer = () => {
     const couponCode = couponCodeRef.current.value.trim().toUpperCase();
@@ -62,10 +54,10 @@ function Cart() {
     const shippment = 50;
     const finalAmount = subTotal + taxPrice + shippment;
 
-    return { totalPrice, discountAmount, taxPrice, finalAmount, couponDiscount,shippment};
+    return { totalPrice, discountAmount, taxPrice, finalAmount, couponDiscount, shippment };
   };
 
-  const { totalPrice, discountAmount, taxPrice, finalAmount, couponDiscount,shippment } = calculatingAmount();
+  const { totalPrice, discountAmount, taxPrice, finalAmount, couponDiscount, shippment } = calculatingAmount();
 
   const generateNextOrderId = () => {
     let lastNumber = parseInt(sessionStorage.getItem('lastOrderNumber')) || 0;
@@ -75,12 +67,15 @@ function Cart() {
     return 'OOO' + String(nextNumber).padStart(3, '0');
   };
 
-  const handleCheckout = () => {
-    if (!customerEmail || !/\S+@\S+\.\S+/.test(customerEmail)) {
-      alert('Please enter a valid email address.');
+  const confirmPayment = () => {
+    if (!paymentMethod) {
+      alert('Please select a payment method.');
       return;
     }
-
+    if (!paymentConfirmed) {
+      alert('Please confirm payment before proceeding.');
+      return;
+    }
     if (cartObjects.length === 0) {
       alert('Your cart is empty.');
       return;
@@ -100,11 +95,11 @@ function Cart() {
         totalPrice: totalPrice,
         discount: discountAmount,
         couponDiscount: couponDiscount,
-        shipping: 50,
+        shipping: shippment,
         tax: taxPrice.toFixed(2),
         total: finalAmount.toFixed(2)
       },
-      email: customerEmail
+      email: currentUser.email
     };
 
     emailjs.send('service_v0f552x', 'template_fy78uzm', templateParams, 'nnkX_qT8FqthPe4pN')
@@ -129,7 +124,7 @@ function Cart() {
     };
 
     dispatch(AddOrder(purchaseDetails));
-    alert('✅ Order placed successfully!');
+    toast.success('✅ Order placed successfully!');
 
     setTimeout(() => {
       dispatch(ClearCart());
@@ -138,26 +133,14 @@ function Cart() {
     }, 1000);
   };
 
-  const confirmPayment = () => {
-    if (!paymentMethod) {
-      alert('Please select a payment method.');
-      return;
-    }
-    if (!paymentConfirmed) {
-      alert('Please confirm payment before proceeding.');
-      return;
-    }
-    handleCheckout();
-  };
-
   const handlePaymentMethodChange = (method) => {
     setPaymentMethod(method);
     setPaymentConfirmed(false);
   };
 
   const renderCartItems = () => {
-    return cartObjects.map(item => (
-      <div className="cart-item" key={item.id}>
+    return cartObjects.map((item, index) => (
+      <div className="cart-item" key={index}>
         <div className="cart-image">
           <img src={item.image} alt={item.name} />
         </div>
@@ -165,10 +148,10 @@ function Cart() {
           <h4>{item.name}</h4>
           <p>₹{item.Price}</p>
           <div className="cart-actions">
-            <button onClick={() =>{ dispatch(DecCart(item));toast.info(`${item.name} quantity decreased`);}}>-</button>
+            <button onClick={() => { dispatch(DecCart(item)); toast.info(`${item.name} quantity decreased`); }}>-</button>
             <span>{item.quantity}</span>
-            <button onClick={() => {dispatch(IncCart(item));toast.info(`${item.name} quantity increased`);}}>+</button>
-            <button className="delete-btn" onClick={() =>{ dispatch(RemoveFromCart(item));toast.info(`${item.name} Remove from cart`);}}>Delete</button>
+            <button onClick={() => { dispatch(IncCart(item)); toast.info(`${item.name} quantity increased`); }}>+</button>
+            <button className="delete-btn" onClick={() => { dispatch(RemoveFromCart(item)); toast.info(`${item.name} removed from cart`); }}>Delete</button>
           </div>
         </div>
         <div className="cart-subtotal">
@@ -180,8 +163,8 @@ function Cart() {
 
   return (
     <div className="cart-container">
+      {/* <ToastContainer position='top-center' autoClose={1000} /> */}
       {showBlast && <div className="bomb-blast">💥</div>}
-      {/* <ToastContainer position='top-center' autoClose={1000}/> */}
 
       {redirectMessage && (
         <div className="redirect-message">
@@ -196,33 +179,6 @@ function Cart() {
       ) : (
         <>
           {renderCartItems()}
-
-          {/* Pagination Controls
-          <div className="pagination">
-            <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              ⬅ Prev
-            </button>
-            {Array.from({ length: Math.ceil(cartObjects.length / itemsPerPage) }, (_, i) => (
-              <button
-                key={`page-${i + 1}`}
-                className={currentPage === i + 1 ? 'active' : ''}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-            <button
-              onClick={() => setCurrentPage(prev =>
-                Math.min(prev + 1, Math.ceil(cartObjects.length / itemsPerPage))
-              )}
-              disabled={currentPage === Math.ceil(cartObjects.length / itemsPerPage)}
-            >
-              Next ➡
-            </button>
-          </div> */}
 
           <div className="cart-summary">
             <h3>Total Price: ₹{totalPrice.toFixed(2)}</h3>
@@ -244,18 +200,8 @@ function Cart() {
 
             <h4>Discount: ₹{discountAmount.toFixed(2)}</h4>
             <h4>Tax (5%): ₹{taxPrice.toFixed(2)}</h4>
-            <h4>shippment: ₹{shippment.toFixed(2)}</h4>
+            <h4>Shippment: ₹{shippment.toFixed(2)}</h4>
             <h2 className="final-amount">Final Amount: ₹{finalAmount.toFixed(2)}</h2>
-
-            <div>
-              <label>Enter your email to receive order confirmation</label>
-              <input
-                type="email"
-                ref={emailRef}
-                onChange={(e) => setCustomerEmail(e.target.value)}
-                placeholder="your@gmail.com"
-              />
-            </div>
 
             <div className="payment-methods">
               <h3>Choose Payment Method</h3>
